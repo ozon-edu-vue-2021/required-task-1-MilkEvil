@@ -62,7 +62,8 @@ const showLoader = function () {
 const hideLoader = function () {
     loaderTimeout = setTimeout(function () {
         loader.style.visibility = 'hidden';
-        loaderTimeout.clearTimeout();
+        // Глобальный метод вызывался у числа
+        clearTimeout(loaderTimeout);
     }, 700);
 }
 
@@ -91,10 +92,12 @@ const renderPictures = function (list) {
         throw Error(`Pictures not defined. The list length: ${list.length}`);
     }
 
-    const clone = templateImageCard.content.cloneNode(true);
     const fragment = document.createDocumentFragment();
 
     list.forEach(function (element) {
+        // Потому что при первом appendChild в конце цикла клон перемещался во фрагмент
+        // и на второй итерации выдавало ошибку
+        const clone = templateImageCard.content.cloneNode(true);
         const link = clone.querySelector('a');
 
         link.href = element.url;
